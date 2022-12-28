@@ -1,0 +1,45 @@
+[package]
+name = "mandelbrot"
+version = "0.1.0"
+authors = ["Stürmer Benjamin <benjamin@stuermer.pro>"]
+edition = "2021"
+description = "Native library to generate mandelbrot and use it in Android"
+readme = "README.md"
+repository = "https://github.com/thebino/android-rust-mandelbrot/"
+license = "GPL-3.0 license"
+keywords = ["android", "native-lib", "rust", "mandelbrot"]
+publish = false
+
+
+[package.metadata.android]
+package-name = "android-rust-mandelbrot"
+assets = "path/to/static"
+
+
+[package.metadata.docs.rs]
+targets = [
+    "aarch64-linux-android",
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]
+
+
+[dependencies]
+# Java to Rust interop
+# https://docs.rs/jni/latest/jni/
+jni = "0.20.0"
+
+# Logging to android
+# https://docs.rs/android_log-sys/0.2.0/android_log_sys/
+android_log-sys = "0.2.0"
+
+# Complex numbers used for calculation
+# https://docs.rs/num/0.4.0/num/
+num = "0.4"
+
+
+[lib]
+# Rust to interop
+# https://source.android.com/docs/setup/build/rust/building-rust-modules/android-rust-patterns
+crate-type = ["cdylib"]
