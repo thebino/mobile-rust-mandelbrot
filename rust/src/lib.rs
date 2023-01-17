@@ -11,24 +11,33 @@ use jni::{
 };
 
 // android logging
+#[cfg(target_os="android")]
 use android_log_sys::{
     LogPriority::{INFO},
     __android_log_write,
 };
 
 
-
-use std::ffi::CString;
+use std::os::raw::{c_char};
+use std::ffi::{*};
 
 // Macro for logging
 #[macro_export]
+#[cfg(target_os="android")]
 macro_rules! log_i {
     ($msg:expr) => {
         unsafe {
             let tag = CString::new("Mandelbrot").unwrap();
             let msg = CString::new($msg).unwrap();
+            #[cfg(target_os="android")]
             __android_log_write(INFO as i32, tag.as_ptr(), msg.as_ptr());
         }
+    };
+}
+#[cfg(not (target_os="android"))]
+macro_rules! log_i {
+    ($msg:expr) => {
+
     };
 }
 
@@ -60,6 +69,40 @@ pub extern "system" fn Java_pro_stuermer_mandelbrot_MandelbrotJNI_echo(
         .expect("Couldn't create jni string!")
         .into_raw();
 }
+
+
+#[no_mangle]
+pub extern fn rust_echo(to: *const c_char) -> *mut c_char {
+    let c_str = unsafe { CStr::from_ptr(to) };
+    let recipient = match c_str.to_str() {
+        Err(_) => "<empty>",
+        Ok(string) => string,
+    };
+
+    CString::new("Echo: ".to_owned() + recipient).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub extern fn rust_echo_free(s: *mut c_char) {
+    unsafe {
+        if s.is_null() { return }
+        CString::from_raw(s)
+    };
+}
+
+#[no_mangle]
+unsafe extern fn rust_render(length: c_int, width: c_int) -> *mut c_uchar {
+    let upper_left = Complex { re: 0.35, im: -1.20 };
+    let lower_right = Complex { re: -1.0, im: 0.20 };
+
+    let b1 = length as usize;
+    let b2 = width as usize;
+    let bounds = (b1, b2);
+    let mut pixels = vec![0; bounds.0 * bounds.1];
+    render(&mut pixels, bounds, upper_left, lower_right);
+    
+    pixels.leak().as_mut_ptr()
+ }
 
 
 /// Plot/Render the Mandelbrot set and returns as byte array to JVM.
