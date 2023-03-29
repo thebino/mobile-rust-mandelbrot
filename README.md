@@ -29,7 +29,21 @@ Build the android project (including the native library) with gradle
 $ ./gradlew :app:installDebug
 ```
 
+![Android Mandelbrot](./demo_ios.png?raw=true)
 ## iOS
+To build the rust code to a native library for iOS, compile with the **lipo extension**
+
+Prepare the Build environment and install the target architectures:
+```shell
+cargo install cargo-lipo
+rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
+```
+
+Build the Framework:
+```shell
+$ cd rust
+$ cargo lipo --targets aarch64-apple-ios-sim --release
+```
 
 
 ## Documentation

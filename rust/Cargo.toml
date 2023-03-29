@@ -1,13 +1,13 @@
 [package]
 name = "mandelbrot"
 version = "0.1.0"
-authors = ["Stürmer Benjamin <benjamin@stuermer.pro>"]
+authors = ["Stürmer Benjamin <benjamin@stuermer.pro>", "Leon von Tippelskirch <leon@dasleon.de>"]
 edition = "2021"
-description = "Native library to generate mandelbrot and use it in Android"
+description = "Native library to generate mandelbrot and use it in Android and iOS"
 readme = "README.md"
 repository = "https://github.com/thebino/android-rust-mandelbrot/"
 license = "GPL-3.0 license"
-keywords = ["android", "native-lib", "rust", "mandelbrot"]
+keywords = ["android", "iOS", "native-lib", "rust", "mandelbrot"]
 publish = false
 
 
@@ -19,7 +19,8 @@ assets = "path/to/static"
 [package.metadata.docs.rs]
 targets = [
     "aarch64-linux-android",
-    "x86_64-apple-darwin",
+    "aarch64-apple-ios",
+    "x86_64-apple-ios",
     "x86_64-pc-windows-msvc",
     "x86_64-unknown-linux-gnu",
 ]
@@ -42,4 +43,5 @@ num = "0.4"
 [lib]
 # Rust to interop
 # https://source.android.com/docs/setup/build/rust/building-rust-modules/android-rust-patterns
-crate-type = ["cdylib"]
+name = "mandelbrot"
+crate-type = ["staticlib", "cdylib"]
